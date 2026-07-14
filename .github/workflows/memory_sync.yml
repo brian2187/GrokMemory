@@ -1,0 +1,13 @@
+# Future automation placeholder
+name: Memory Sync
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours example
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    # Future: script to pull from email or GrokM and push updates
+    - name: Placeholder
+      run: echo 'Memory sync workflow ready for expansion'
