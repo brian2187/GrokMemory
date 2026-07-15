@@ -1,14 +1,43 @@
-# Future automation placeholder
-name: Memory Sync
+name: GrokMemory Auto Sync
+
 on:
   schedule:
-    - cron: '0 * * * *'  # Every hour
-  workflow_dispatch:  # Manual trigger option
+    - cron: '0 * * * *'  # Strict hourly automatic sync
+  push:
+    branches: [ main ]
+    paths:
+      - 'memory/**'
+      - 'directives/**'
+      - 'logs/**'
+      - '.github/workflows/**'
+  workflow_dispatch:  # Optional fallback only
+
 jobs:
-  sync:
+  auto-sync:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-    - uses: actions/checkout@v4
-    # Future: script to pull from email or GrokM and push updates
-    - name: Placeholder
-      run: echo 'Memory sync workflow ready for expansion - now hourly'
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0  # Full history for better diffs
+
+      - name: Auto Sync Status
+        run: |
+          echo "🚀 GrokMemory automatic hourly sync started at $(date -u +'%Y-%m-%d %H:%M UTC')"
+          echo "Branch: main | SHA: $(git rev-parse HEAD)"
+
+      - name: Commit & Push Any Changes
+        run: |
+          git config user.name "GrokMemory Bot"
+          git config user.email "grok@memory.local"
+          
+          git add -A
+          if git diff --cached --quiet; then
+            echo "✅ No changes detected - sync clean."
+          else
+            git commit -m "chore: auto-sync [$(date -u +'%Y-%m-%d %H:%M UTC')]"
+            git push
+            echo "✅ Changes automatically committed and pushed."
+          fi
