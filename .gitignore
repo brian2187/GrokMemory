@@ -1,0 +1,27 @@
+# GrokMemory .gitignore
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+
+# Temp
+*.tmp
+*.log
+
+# Sensitive (never commit real keys/tokens)
+secrets/
+*.pem

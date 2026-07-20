@@ -1,19 +1,20 @@
-name: GrokMemory Auto Sync
+name: GrokMemory Auto Sync & Dream
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Strict hourly automatic sync
+    - cron: '0 * * * *'  # Hourly automatic heartbeat/sync
   push:
     branches: [ main ]
     paths:
       - 'memory/**'
       - 'directives/**'
       - 'logs/**'
+      - 'scripts/**'
       - '.github/workflows/**'
-  workflow_dispatch:  # Optional fallback only
+  workflow_dispatch:  # Manual trigger + watcher style
 
 jobs:
-  auto-sync:
+  auto-sync-dream:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -21,12 +22,27 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0  # Full history for better diffs
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Dream Consolidation (if script present)
+        run: |
+          if [ -f scripts/dream_consolidation.py ]; then
+            echo "\ud83d\ude80 Running dream consolidation..."
+            python scripts/dream_consolidation.py
+          else
+            echo "No consolidation script found, skipping."
+          fi
 
       - name: Auto Sync Status
         run: |
-          echo "🚀 GrokMemory automatic hourly sync started at $(date -u +'%Y-%m-%d %H:%M UTC')"
+          echo "\ud83d\ude80 GrokMemory heartbeat/sync started at $(date -u +'%Y-%m-%d %H:%M UTC')"
           echo "Branch: main | SHA: $(git rev-parse HEAD)"
+          echo "Changes detected in memory/directives/logs - watcher active."
 
       - name: Commit & Push Any Changes
         run: |
@@ -35,9 +51,9 @@ jobs:
           
           git add -A
           if git diff --cached --quiet; then
-            echo "✅ No changes detected - sync clean."
+            echo "\u2705 No changes detected - sync clean. Heartbeat complete."
           else
-            git commit -m "chore: auto-sync [$(date -u +'%Y-%m-%d %H:%M UTC')]"
+            git commit -m "chore: auto-sync + dream [$(date -u +'%Y-%m-%d %H:%M UTC')]"
             git push
-            echo "✅ Changes automatically committed and pushed."
+            echo "\u2705 Changes committed and pushed. Watcher pulse complete."
           fi
