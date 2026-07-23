@@ -22,7 +22,7 @@ def consolidate_memory():
     
     timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
     
-    print(f"\ud83d\ude80 Starting dream consolidation at {timestamp}")
+    print(f"Starting dream consolidation at {timestamp}")
     
     # Gather key files
     profile_path = os.path.join(memory_dir, "Master_Profile.md")
@@ -76,7 +76,7 @@ def consolidate_memory():
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(consolidated)
     
-    print(f"\u2705 Consolidation complete. Snapshot written to {output_file}")
+    print(f"Consolidation complete. Snapshot written to {output_file}")
     return output_file
 
 if __name__ == "__main__":
