@@ -32,7 +32,7 @@ jobs:
       - name: Dream Consolidation (if script present)
         run: |
           if [ -f scripts/dream_consolidation.py ]; then
-            echo "\ud83d\ude80 Running dream consolidation..."
+            echo "Running dream consolidation..."
             python scripts/dream_consolidation.py
           else
             echo "No consolidation script found, skipping."
@@ -40,7 +40,7 @@ jobs:
 
       - name: Auto Sync Status
         run: |
-          echo "\ud83d\ude80 GrokMemory heartbeat/sync started at $(date -u +'%Y-%m-%d %H:%M UTC')"
+          echo "GrokMemory heartbeat/sync started at $(date -u +'%Y-%m-%d %H:%M UTC')"
           echo "Branch: main | SHA: $(git rev-parse HEAD)"
           echo "Changes detected in memory/directives/logs - watcher active."
 
@@ -51,9 +51,9 @@ jobs:
           
           git add -A
           if git diff --cached --quiet; then
-            echo "\u2705 No changes detected - sync clean. Heartbeat complete."
+            echo "No changes detected - sync clean. Heartbeat complete."
           else
             git commit -m "chore: auto-sync + dream [$(date -u +'%Y-%m-%d %H:%M UTC')]"
             git push
-            echo "\u2705 Changes committed and pushed. Watcher pulse complete."
+            echo "Changes committed and pushed. Watcher pulse complete."
           fi
